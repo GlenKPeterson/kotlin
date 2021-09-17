@@ -39,7 +39,7 @@ abstract class CommonCompilerArguments : CommonToolArguments() {
     @get:Transient
     var autoAdvanceApiVersion: Boolean by FreezableVar(true)
 
-    @GradleOption(DefaultValues.LanguageVersions::class)
+    @GradleOption(DefaultValues.ApiVersions::class)
     @Argument(
         value = "-api-version",
         valueDescription = "<version>",
