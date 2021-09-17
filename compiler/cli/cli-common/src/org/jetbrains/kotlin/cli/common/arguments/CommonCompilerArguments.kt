@@ -581,13 +581,13 @@ abstract class CommonCompilerArguments : CommonToolArguments() {
     }
 
     private fun checkOutdatedVersions(language: LanguageVersion, api: ApiVersion, collector: MessageCollector) {
-        val (version, versionKind) = findOutdatedVersion(language, api) ?: return
+        val (version, supportedVersion, versionKind) = findOutdatedVersion(language, api) ?: return
         when {
             version.isUnsupported -> {
                 collector.report(
                     CompilerMessageSeverity.ERROR,
                     "${versionKind.text} version ${version.versionString} is no longer supported; " +
-                            "please, use version ${LanguageVersion.FIRST_NON_DEPRECATED.versionString} or greater."
+                            "please, use version ${supportedVersion!!.versionString} or greater."
                 )
             }
             version.isDeprecated -> {
@@ -600,12 +600,12 @@ abstract class CommonCompilerArguments : CommonToolArguments() {
         }
     }
 
-    private fun findOutdatedVersion(language: LanguageVersion, api: ApiVersion): Pair<LanguageOrApiVersion, VersionKind>? {
+    private fun findOutdatedVersion(language: LanguageVersion, api: ApiVersion): Triple<LanguageOrApiVersion, LanguageOrApiVersion?, VersionKind>? {
         return when {
-            language.isUnsupported -> language to VersionKind.LANGUAGE
-            api.isUnsupported -> api to VersionKind.API
-            language.isDeprecated -> language to VersionKind.LANGUAGE
-            api.isDeprecated -> api to VersionKind.API
+            language.isUnsupported -> Triple(language, LanguageVersion.FIRST_SUPPORTED, VersionKind.LANGUAGE)
+            api.isUnsupported -> Triple(api, ApiVersion.FIRST_SUPPORTED, VersionKind.API)
+            language.isDeprecated -> Triple(language, null, VersionKind.LANGUAGE)
+            api.isDeprecated -> Triple(api, null, VersionKind.API)
             else -> null
         }
     }
