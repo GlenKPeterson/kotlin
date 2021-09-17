@@ -594,7 +594,7 @@ abstract class CommonCompilerArguments : CommonToolArguments() {
                 collector.report(
                     CompilerMessageSeverity.STRONG_WARNING,
                     "${versionKind.text} version ${version.versionString} is deprecated " +
-                            "and its support will be removed in a future version of Kotlin."
+                            "and its support will be removed in a future version of Kotlin"
                 )
             }
         }
